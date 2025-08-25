@@ -1,4 +1,4 @@
-package com.email.writer.controller.Entity;
+package com.email.writer.Entity;
 
 
 import lombok.Data;

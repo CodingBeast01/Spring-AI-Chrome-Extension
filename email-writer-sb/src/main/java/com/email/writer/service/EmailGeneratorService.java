@@ -1,6 +1,6 @@
 package com.email.writer.service;
 
-import com.email.writer.controller.Entity.EmailRequest;
+import com.email.writer.Entity.EmailRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
