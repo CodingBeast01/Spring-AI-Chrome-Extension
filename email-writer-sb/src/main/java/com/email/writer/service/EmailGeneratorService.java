@@ -1,21 +1,28 @@
 package com.email.writer.service;
 
 import com.email.writer.controller.Entity.EmailRequest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
 @Service
 public class EmailGeneratorService {
 
+    private final WebClient webClient;
+
     @Value("${gemini.api.url}")
-    private String GeminiApiUrl;
+    private String geminiApiUrl;
 
     @Value("${gemini.api.key}")
-    private  String getGeminiApiKey;
+    private  String geminiApiKey;
 
-
+    public EmailGeneratorService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
 
     public String generateEmail(EmailRequest emailRequest){
@@ -31,6 +38,33 @@ public class EmailGeneratorService {
         );
 
         // Do request and get Response
+        String response = webClient.post()
+                .uri(geminiApiUrl+geminiApiKey)
+                .header("Content-Type","application/json")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        return  extractResponseContent(response);
+        }
+
+        private String extractResponseContent(String response){
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode rootNode = mapper.readTree(response);
+                    return  rootNode.path("candidates")
+                            .get(0)
+                            .path("content")
+                            .path("parts")
+                            .get(0)
+                            .path("text")
+                            .asText();
+
+                }catch (Exception e){
+                    return "Error Processing Request" + e.getMessage();
+
+                }
+
 
     }
 
