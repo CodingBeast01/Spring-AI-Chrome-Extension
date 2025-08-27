@@ -25,5 +25,6 @@ public class EmailGeneratorController {
 
   String response = emailGeneratorService.generateEmail(emailRequest);
         return ResponseEntity.ok(response);
+        
     }
 }

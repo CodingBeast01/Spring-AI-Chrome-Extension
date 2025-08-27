@@ -81,4 +81,5 @@ public class EmailGeneratorService {
 
         return prompt.toString();
     }
+
 }
